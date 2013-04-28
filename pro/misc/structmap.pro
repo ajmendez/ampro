@@ -9,7 +9,7 @@ FUNCTION structmap, smap, item, strict=strict, exact=exact, default=default
          l = min(strlen([item[i]])) ELSE $
             l = min(strlen([tag_names(smap), item[i]]))
       ii = where(strcmp(strlowcase(tag_names(smap)), strlowcase(item[i]), l) EQ 1, nii)
-    ENDIF
+    ENDELSE
     
     ;; clean up  -- this needs some debugging
     IF nii EQ 0 AND n_elements(default) GT 0 THEN return, default
