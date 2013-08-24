@@ -34,11 +34,13 @@ FUNCTION polymerge, poly1, poly2
   
   k = 0L
   N = n_elements(poly1)*n_elements(poly2)
-  mergedpolys = replicate(poly1[0], N)
+  ;; mergedpolys = replicate(poly1[0], N)
+  mergedpolys = construct_polygon(nelem=N)
+  
   nprint = long(N/20.0)
-
-  FOR i=0, n_elements(poly1)-1 DO BEGIN
-    FOR j=0, n_elements(poly2)-1 DO BEGIN
+  splog, 'Number of Polygons: n1*n2 = ', N
+  FOR i=0L, n_elements(poly1)-1 DO BEGIN
+    FOR j=0L, n_elements(poly2)-1 DO BEGIN
       poly = polygon_overlap(poly1[i],poly2[j])
       mergedpolys[k++] = poly
       ;; IF n_elements(mergedpoly) EQ 0 THEN BEGIN
@@ -50,7 +52,13 @@ FUNCTION polymerge, poly1, poly2
     ENDFOR
   ENDFOR
   ;; return, mergedpoly
-  return, mergedpolys
+  
+  ;; there are a bunch of zero polygons, so remove them
+  ii = where(mergedpolys.str GT 0, nii, complement=jj, ncomplement=njj)
+  splog, 'Number of Overlaping Polygons: ', nii
+  IF nii EQ 0 THEN message, 'No polygons overlap'
+  IF njj GT 0 THEN destruct_polygon, mergedpolys[jj]
+  return, mergedpolys[ii]
   
 END
 
